@@ -13,11 +13,16 @@ class ToDoListViewController: UITableViewController {
     
     var itemArray: [String] = []
     
+    let defaults = UserDefaults.standard
+    
 
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        itemArray = defaults.array(forKey:"ToDoItemArray") as? [String] ?? [String]()
+
         // Do any additional setup after loading the view.
     }
     
@@ -32,13 +37,10 @@ class ToDoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath)
         
         var content = cell.defaultContentConfiguration()
-
+                
         content.text = itemArray[indexPath.row]
         
         cell.contentConfiguration = content
-        
-        //test commit test
-        //here's another test
         
         return cell
         
@@ -49,7 +51,7 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
    //     print(itemArray[indexPath.row])
-        //tester
+        //testerno more
         
         
         tableView.deselectRow(at: indexPath, animated: true)
@@ -67,26 +69,37 @@ class ToDoListViewController: UITableViewController {
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
+        var textField = UITextField()
+        
         
         let alert = UIAlertController(title: "Add new item to the list", message: "", preferredStyle: .alert)
 
-        
-        alert.addAction(UIAlertAction(title: "ok", style: .default, handler: { [weak alert] (action) -> Void in
-            let textField = (alert?.textFields![0])! as UITextField
+        let action = UIAlertAction(title: "OK", style: .default) { (action) in
             self.itemArray.append(textField.text ?? "")
+            
+            self.defaults.set(self.itemArray, forKey: "ToDoItemArray")
+            
+            print(self.defaults.object(forKey: "ToDoItemArray") ?? "")
+            
             self.tableView.reloadData()
             
-        }))
+            
+        }
         
         alert.addTextField { (alertTextField) in
             
             alertTextField.placeholder = "Type it out"
             
+            textField = alertTextField
+
+            
         }
+        
+        alert.addAction(action)
         
         present(alert, animated: true)
 
-        
+
     }
     
 
