@@ -14,9 +14,8 @@ class ToDoListViewController: UITableViewController {
     var itemArray: [String] = []
     
     let defaults = UserDefaults.standard
-    
-//test comment
-    
+        
+    // newest test comment
 
     override func viewDidLoad() {
         super.viewDidLoad()
