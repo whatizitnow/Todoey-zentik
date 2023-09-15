@@ -14,7 +14,8 @@ class ToDoListViewController: UITableViewController {
     var itemArray = [
         "Stranger Things",
         "Open Box",
-        "Stupider Worsters"
+        "Stupider Worsters",
+        "How are you the bestest?"
     ]
     
 
