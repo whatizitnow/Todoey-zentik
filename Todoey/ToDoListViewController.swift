@@ -11,12 +11,7 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     
-    var itemArray = [
-        "Stranger Things",
-        "Open Box",
-        "Stupider Worsters",
-        "How are you the bestest?"
-    ]
+    var itemArray: [String] = []
     
 
     
@@ -42,6 +37,8 @@ class ToDoListViewController: UITableViewController {
         
         cell.contentConfiguration = content
         
+        //test commit test
+        //here's another test
         
         return cell
         
@@ -69,11 +66,17 @@ class ToDoListViewController: UITableViewController {
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
+        
         let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
+
         
-        let action = UIAlertAction(title: "Add", style: .default)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (action) -> Void in
+            let textField = (alert?.textFields![0])! as UITextField
+            self.itemArray.append(textField.text ?? "")
+            self.tableView.reloadData()
+            
+        }))
         
-        alert.addAction(action)
         alert.addTextField { (alertTextField) in
             
             alertTextField.placeholder = "Type it out"
@@ -81,9 +84,7 @@ class ToDoListViewController: UITableViewController {
         }
         
         present(alert, animated: true)
-        
-//        itemArray.append("")
-//        tableView.reloadData()
+
         
     }
     
