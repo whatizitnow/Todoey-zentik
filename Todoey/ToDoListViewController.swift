@@ -67,10 +67,10 @@ class ToDoListViewController: UITableViewController {
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         
-        let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add new item to the list", message: "", preferredStyle: .alert)
 
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "ok", style: .default, handler: { [weak alert] (action) -> Void in
             let textField = (alert?.textFields![0])! as UITextField
             self.itemArray.append(textField.text ?? "")
             self.tableView.reloadData()
