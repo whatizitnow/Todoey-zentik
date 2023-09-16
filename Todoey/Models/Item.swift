@@ -8,13 +8,13 @@
 
 import Foundation
 
-class Item {
+class Item: Codable {
     
-    var item: String = ""
+    var title: String = ""
     var done: Bool = false
     
-    init(item: String, done: Bool) {
-        self.item = item
-        self.done = done
+//    init(title: String, done: Bool) {
+//        self.title = title
+//        self.done = done
     }
-}
+

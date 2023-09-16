@@ -10,25 +10,31 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
+        
+    var newArray = [Item]()
     
-    var itemArray: [String] = []
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     let defaults = UserDefaults.standard
+    
         
-    // newest test comment
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        itemArray = defaults.array(forKey:"ToDoItemArray") as? [String] ?? [String]()
-
+        
+        loadItems()
+        
+        if let itemArray = defaults.array(forKey: K.ArrayIdentifier) as? [Item] {
+            
+            newArray = itemArray
+        }
         // Do any additional setup after loading the view.
     }
     
     //MARK: Tableview Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return newArray.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -36,10 +42,15 @@ class ToDoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath)
         
         var content = cell.defaultContentConfiguration()
+        
+        let item = newArray[indexPath.row]
                 
-        content.text = itemArray[indexPath.row]
+        content.text = item.title
         
         cell.contentConfiguration = content
+        
+        cell.accessoryType = item.done ? .checkmark : .none
+
         
         return cell
         
@@ -49,19 +60,15 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-   //     print(itemArray[indexPath.row])
-        //testerno more
-        
-        
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if let cell = tableView.cellForRow(at: indexPath) {
-            if cell.accessoryType == .checkmark {
-                cell.accessoryType = .none
-            } else {
-                cell.accessoryType = .checkmark
-            }
-        }
+        //toggle the reverse using '!' before value
+        newArray[indexPath.row].done = !newArray[indexPath.row].done
+        
+        saveItems()
+        
+        tableView.reloadData()
+
 
     }
     
@@ -72,15 +79,16 @@ class ToDoListViewController: UITableViewController {
         
         
         let alert = UIAlertController(title: "Add new item to the list", message: "", preferredStyle: .alert)
+        
+    
 
         let action = UIAlertAction(title: "OK", style: .default) { (action) in
-            self.itemArray.append(textField.text ?? "")
             
-            self.defaults.set(self.itemArray, forKey: "ToDoItemArray")
+            let newItem = Item()
+            newItem.title = textField.text ?? ""
+            self.newArray.append(newItem)
             
-            print(self.defaults.object(forKey: "ToDoItemArray") ?? "")
-            
-            self.tableView.reloadData()
+            self.saveItems()
             
             
         }
@@ -101,7 +109,35 @@ class ToDoListViewController: UITableViewController {
 
     }
     
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        
+        
+        do {
+            
+            let data = try encoder.encode(self.newArray)
+            try data.write(to: self.dataFilePath!)
+            
+        } catch {
+            print("Error encoding item array")
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    func loadItems() {
+        
+            do {
+                let data = try Data(contentsOf: dataFilePath!)
+                
+                let decoder = PropertyListDecoder()
 
+                newArray = try PropertyListDecoder().decode([Item].self, from: data)
+            
+            } catch {
+                print("Can't retrieve data")
+            }
+    }
 
 
 }
